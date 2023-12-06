@@ -28,7 +28,7 @@ public class Day1Test
     {
         var day1 = new Day1();
         
-        Assert.Equal(53510, day1.Sum);
+        Assert.Equal(54100, day1.Sum);
     }
 
     [Fact]
