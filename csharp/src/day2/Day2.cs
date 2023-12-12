@@ -1,21 +1,32 @@
 ﻿
 
 using System.Text.RegularExpressions;
+using Helper;
 
 namespace day2;
 
-public class Class1
-{
-
-}
+public enum Colours
+  {
+    Red,
+    Green,
+    Blue
+  }
 
 public class GameReader
 {
-  private IEnumerable<Game> _games;
+    private readonly IEnumerable<string> _lines;
+    private List<Game> _games = new List<Game>();
+
+  public GameReader()
+  {
+    _lines = FileLoader.Load("day2.txt");
+    loadGames();
+  }
 
   public GameReader(params string[] games)
   {
-    _games = games.Select(game => new Game(game));
+    _lines = new List<string>();
+    _games = games.Select(game => new Game(game)).ToList();
   }
 
   public Game GetGameById(int id)
@@ -23,18 +34,40 @@ public class GameReader
       return _games.Single(game => game.ID == id);
   }
 
-  
+  public int SumMatchingGames(int red, int green, int blue)
+  {
+    var matchingGames = _games.Where(game => {
+      if (game.ReadCubesByColour("red").Max() <= red 
+        && game.ReadCubesByColour("green").Max() <= green
+        && game.ReadCubesByColour("blue").Max() <= blue)
+      {
+        return true;
+      }
+      return false;
+    });
+    return matchingGames.Sum(game => game.ID);
+  }
+
+  public int SumPowerMinimumPossibleCubes()
+  {
+    return _games.Sum(game => game.ReadCubesByColour("red").Max() 
+      * game.ReadCubesByColour("green").Max()
+      * game.ReadCubesByColour("blue").Max());
+  }
+
+  private void loadGames()
+  {
+    foreach (var line in _lines)
+    {
+      _games.Add(new Game(line));
+    }
+  }
 }
 
 public class Game
 {
   private Dictionary<Colours, List<int>> _cubes;
-  public enum Colours
-  {
-    Red,
-    Green,
-    Blue
-  }
+  
 
   public Game(string gameString)
   {
@@ -48,40 +81,48 @@ public class Game
     private set;
   }
 
-  public int ReadCubeByColour(string colour)
+  public List<int> ReadCubesByColour(string colour)
   {
-    return _cubes[GetColours(colour)][0];
+    if(_cubes.ContainsKey(GetColours(colour)))
+      return _cubes[GetColours(colour)];
+    else
+    {
+      return new List<int>(){0};
+    }
   }
 
   private void extractGameDefinition(string game)
   {
-    var separators = new string[] {":", ","};
-    var splitGameString = game.Split(separators, StringSplitOptions.TrimEntries);
+    var separators = new string[] {":", ",", ";"};
+    var splitGameString = game.Split(separators, StringSplitOptions.RemoveEmptyEntries);
     ID = int.Parse(Regex.Match(splitGameString[0], @"\d+").Value);
-    Regex myRegex = new Regex(@"\b(Red|Blue|Green)");
-    for (int i = 1; i < splitGameString.Length - 1; i++)
+    Regex myRegex = new Regex(@"\b(Red|Blue|Green|red|blue|green)");
+    if(splitGameString.Length > 1)
     {
-      
-      var results = myRegex.Split(splitGameString[i]);
-      Colours cubeColour = GetColours(results[1]);
-      if(_cubes.ContainsKey(cubeColour))
+      for (int i = 1; i < splitGameString.Length; i++)
       {
-        _cubes[cubeColour].Add(int.Parse(results[0]));
-      } 
-      else
-      {
-        _cubes.Add(cubeColour, new List<int>{int.Parse(results[0])});
+        
+        var results = myRegex.Split(splitGameString[i]);
+        Colours cubeColour = GetColours(results[1]);
+        if(_cubes.ContainsKey(cubeColour))
+        {
+          _cubes[cubeColour].Add(int.Parse(results[0]));
+        } 
+        else
+        {
+          _cubes.Add(cubeColour, new List<int>{int.Parse(results[0])});
+        }
       }
     }
   }
 
-  private static Colours GetColours(string colour)
+  public static Colours GetColours(string colour)
   {
-    switch (colour)
+    switch (colour.ToLower())
     {
-      case "Red": return Colours.Red;
-      case "Blue": return Colours.Blue;
-      case "Green": return Colours.Green;
+      case "red": return Colours.Red;
+      case "blue": return Colours.Blue;
+      case "green": return Colours.Green;
       default: return Colours.Blue;
     }
   }
