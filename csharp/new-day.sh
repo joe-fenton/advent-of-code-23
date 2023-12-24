@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 dotnet new xunit -o test/day$1Test
 dotnet new classlib -o src/day$1 
