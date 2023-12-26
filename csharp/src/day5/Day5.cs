@@ -73,36 +73,43 @@ public class SeedMapper
       switch (state)
       {
         case "ssm":
-          var ssMap = Strings.ExtractNumbersFromString(line);
-          if (ssMap.Length == 3)
-          {
-            var aMap = new Mapping(ssMap[0], ssMap[1], ssMap[2]);
-            List<int>? seedsToMap = null;
-            if (SeedsMappedToSoil.Count == 0)
-            {
-              seedsToMap = Seeds;
-            }
-            else
-            {
-              seedsToMap = SeedsMappedToSoil;
-            }
-            List<int> newlyMapped = new List<int>();
-            seedsToMap.ForEach(seed =>
-            {
-              if (seed >= aMap.Source && seed < aMap.Source + aMap.Length)
-              {
-                var difference = seed - aMap.Source;
-                newlyMapped.Add(aMap.Destination + difference);
-              }
-              else
-              {
-                newlyMapped.Add(seed);
-              }
-            });
-            SeedsMappedToSoil = newlyMapped;
-          }
+          SeedsMappedToSoil = PerformMapping(line, Seeds, SeedsMappedToSoil);
           break;
       }
     }
+  }
+
+  private List<int> PerformMapping(string currentMap, List<int> source, List<int> destination)
+  {
+    var ssMap = Strings.ExtractNumbersFromString(currentMap);
+    List<int> newlyMapped = new List<int>();
+    if (ssMap.Length == 3)
+    {
+      var aMap = new Mapping(ssMap[0], ssMap[1], ssMap[2]);
+      List<int>? seedsToMap = null;
+      if (destination.Count == 0)
+      {
+        seedsToMap = source;
+      }
+      else
+      {
+        seedsToMap = destination;
+      }
+
+      seedsToMap.ForEach(seed =>
+      {
+        if (seed >= aMap.Source && seed < aMap.Source + aMap.Length)
+        {
+          var difference = seed - aMap.Source;
+          newlyMapped.Add(aMap.Destination + difference);
+        }
+        else
+        {
+          newlyMapped.Add(seed);
+        }
+      });
+      return newlyMapped;
+    }
+    return destination;
   }
 }
