@@ -33,4 +33,27 @@ public class Day5Test
     Assert.Equal(57, seedMapper.SeedsMappedToSoil[2]);
     Assert.Equal(13, seedMapper.SeedsMappedToSoil[3]);
   }
+
+  [Fact]
+  public void shouldReadSoilToFertiliserMap()
+  {
+    var seeds = "seeds: 79 14 55 13";
+    var line1 = "";
+    var seedToSoilTitle = "seed-to-soil map:";
+    var seedToSoil1 = "50 98 2";
+    var seedToSoil2 = "52 50 48";
+    var line2 = "\n";
+    var soilToFertTitle = "soil-to-fertilizer map:";
+    var soilToFert1 = "0 15 37";
+    var soilToFert2 = "37 52 2";
+    var soilToFert3 = "39 0 15";
+    var line3 = "\n";
+
+    var seedMapper = new SeedMapper(seeds, line1, seedToSoilTitle, seedToSoil1, seedToSoil2, line2, soilToFertTitle, soilToFert1, soilToFert2, soilToFert3, line3);
+
+    Assert.Equal(81, seedMapper.SoilMappedToFertiliser[0]);
+    Assert.Equal(53, seedMapper.SoilMappedToFertiliser[1]);
+    Assert.Equal(57, seedMapper.SoilMappedToFertiliser[2]);
+    Assert.Equal(52, seedMapper.SoilMappedToFertiliser[3]);
+  }
 }
