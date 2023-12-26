@@ -1,5 +1,4 @@
 ﻿
-using System.Text.RegularExpressions;
 using Helper;
 
 namespace day4;
@@ -29,31 +28,17 @@ public class LotteryReader
       var to = line.IndexOf("|");
       var winningNumbersString = line.Substring(from, to - from);
 
-      _winningNumbers.Add(ExtractNumbersFromString(winningNumbersString));
+      _winningNumbers.Add(Strings.ExtractNumbersFromString(winningNumbersString));
 
       var drawnNumbersString = line.Substring(to + 1, line.Length - to - 1);
 
-      _drawnNumbers.Add(ExtractNumbersFromString(drawnNumbersString));
+      _drawnNumbers.Add(Strings.ExtractNumbersFromString(drawnNumbersString));
     }
     _cardCounter = new int[_winningNumbers.Count];
     for (int i = 0; i < _cardCounter.Length; i++)
     {
       _cardCounter[i] = 1;
     }
-  }
-
-  private int[] ExtractNumbersFromString(string spaceSeparatedNumbers)
-  {
-    List<int> numbers = new List<int>();
-    var numberMatches = Regex.Match(spaceSeparatedNumbers, @"\d+");
-
-    while (numberMatches.Success)
-    {
-      numbers.Add(int.Parse(numberMatches.Value));
-      numberMatches = numberMatches.NextMatch();
-    }
-
-    return numbers.ToArray();
   }
 
   public int[] GetWinningNumbers(int card)
