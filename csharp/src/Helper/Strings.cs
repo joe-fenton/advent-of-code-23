@@ -4,14 +4,14 @@ namespace Helper;
 
 public static class Strings
 {
-  public static int[] ExtractNumbersFromString(string spaceSeparatedNumbers)
+  public static long[] ExtractNumbersFromString(string spaceSeparatedNumbers)
   {
-    List<int> numbers = new List<int>();
+    List<long> numbers = new List<long>();
     var numberMatches = Regex.Match(spaceSeparatedNumbers, @"\d+");
 
     while (numberMatches.Success)
     {
-      numbers.Add(int.Parse(numberMatches.Value));
+      numbers.Add(long.Parse(numberMatches.Value));
       numberMatches = numberMatches.NextMatch();
     }
 

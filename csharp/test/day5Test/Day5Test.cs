@@ -1,4 +1,5 @@
 using day5;
+using Helper;
 
 namespace day5Test;
 
@@ -55,5 +56,32 @@ public class Day5Test
     Assert.Equal(53, seedMapper.SoilMappedToFertiliser[1]);
     Assert.Equal(57, seedMapper.SoilMappedToFertiliser[2]);
     Assert.Equal(52, seedMapper.SoilMappedToFertiliser[3]);
+  }
+
+  [Fact]
+  public void shouldReadFertiliserToWaterMap()
+  {
+    var seedMapper = new SeedMapper(FileLoader.Load("day5Simplified.txt").ToArray());
+
+    Assert.Equal(81, seedMapper.FertiliserMappedToWater[0]);
+    Assert.Equal(49, seedMapper.FertiliserMappedToWater[1]);
+    Assert.Equal(53, seedMapper.FertiliserMappedToWater[2]);
+    Assert.Equal(41, seedMapper.FertiliserMappedToWater[3]);
+  }
+
+  [Fact]
+  public void shouldCalculateLowestLocationForSimpleTestData()
+  {
+    var seedMapper = new SeedMapper(FileLoader.Load("day5Simplified.txt").ToArray());
+
+    Assert.Equal(35, seedMapper.HumidityMappedToLocation.Min());
+  }
+
+  [Fact]
+  public void shouldCalculateLowestLocationForDay5Part1()
+  {
+    var seedMapper = new SeedMapper();
+
+    Assert.Equal(178159714, seedMapper.HumidityMappedToLocation.Min());
   }
 }
